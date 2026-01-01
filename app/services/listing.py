@@ -45,6 +45,18 @@ async def get_user_properties(current_user: UserInDB, db: AsyncSession):
     return property
 
 
+async def get_property_by_id(property_id: int, db: AsyncSession):
+    query = select(Property).where(Property.id == property_id)
+    result: Result = await db.execute(query)
+    property = result.scalar_one_or_none()
+    if not property:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail=f"Property with id:{property_id} not found",
+        )
+    return property
+
+
 async def update_listing(
     property_id: int,
     current_user: UserInDB,

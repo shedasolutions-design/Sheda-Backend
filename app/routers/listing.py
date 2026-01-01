@@ -11,6 +11,7 @@ from app.schemas.property_schema import (
 from app.services.listing import (
     create_property_listing,
     get_user_properties,
+    get_property_by_id,
     update_listing,
     filtered_property,
     get_agent_by_id,
@@ -44,6 +45,16 @@ async def list_property(
 @router.get("/me", response_model=List[PropertyShow], status_code=status.HTTP_200_OK)
 async def get_my_listing(current_user: ActiveAgent, db: DBSession):
     return await get_user_properties(current_user, db)
+
+
+@router.get(
+    "/{property_id}",
+    response_model=PropertyShow,
+    status_code=status.HTTP_200_OK,
+    description="Get a property by ID",
+)
+async def get_property(property_id: int, current_user: ActiveUser, db: DBSession):
+    return await get_property_by_id(property_id, db)
 
 
 update_desc = """pick your field of interest and ignore the rest, the server will dynamically update them"""
